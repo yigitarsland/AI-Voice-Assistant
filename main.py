@@ -17,6 +17,18 @@ async def entrypoint(ctx: JobContext):
     )
     await ctx.connect(auto_subscribe=AutoSubscribe.AUDIO_ONLY)
     
+    assistant=VoiceAssistant(
+        vad=silero.VAD.load(), # Voice Activity Detection Model
+        stt=openai.STT(), # Speech to Text Model
+        llm=openai.LLM(), # Large Language Model
+        tts=openai.TTS(), # Text to Speech Model
+        chat_ctx=initial_ctx # Chat Context
+    )
+    assistant.start(ctx.room)
+
+    await asyncio.sleep(1)
+    await assistant.say("How can I help you today?", allow_interruptions=True)
+
 
 if __name__ == "__main__":
     cli.run_app(WorkerOptions(entrypoint_fnc=entrypoint))
