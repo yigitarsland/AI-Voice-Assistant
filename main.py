@@ -8,29 +8,30 @@ from api import AssistantFnc
 
 load_dotenv()
 
+
 async def entrypoint(ctx: JobContext):
     initial_ctx = llm.ChatContext().append(
         role="system",
         text=(
             "You are a voice assistant created by LiveKit. Your interface with users will be voice. "
             "You should use short and concise responses, and avoiding usage of unpronouncable punctuation."
-        )
+        ),
     )
     await ctx.connect(auto_subscribe=AutoSubscribe.AUDIO_ONLY)
     fnc_ctx = AssistantFnc()
 
-    assistant=VoiceAssistant(
-        vad=silero.VAD.load(), # Voice Activity Detection Model
-        stt=openai.STT(), # Speech to Text Model
-        llm=openai.LLM(), # Large Language Model
-        tts=openai.TTS(), # Text to Speech Model
-        chat_ctx=initial_ctx, # Chat Context
-        fnc_ctx=fnc_ctx # Assistant Functionality
+    assitant = VoiceAssistant(
+        vad=silero.VAD.load(),
+        stt=openai.STT(),
+        llm=openai.LLM(),
+        tts=openai.TTS(),
+        chat_ctx=initial_ctx,
+        fnc_ctx=fnc_ctx,
     )
-    assistant.start(ctx.room)
+    assitant.start(ctx.room)
 
     await asyncio.sleep(1)
-    await assistant.say("How can I help you today?", allow_interruptions=True)
+    await assitant.say("Hey, how can I help you today!", allow_interruptions=True)
 
 
 if __name__ == "__main__":
