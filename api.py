@@ -3,8 +3,7 @@ from typing import Annotated
 from livekit.agents import llm
 import logging
 
-# Create the logger
-logger = logging.getLogger("Temperature-control")
+logger = logging.getLogger("temperature-control")
 logger.setLevel(logging.INFO)
 
 
@@ -30,8 +29,7 @@ class AssistantFnc(llm.FunctionContext):
 
     @llm.ai_callable(description="get the temperature in a specific room")
     def get_temperature(
-        self,
-        zone: Annotated[Zone, llm.TypeInfo(description="The specific zone")]
+        self, zone: Annotated[Zone, llm.TypeInfo(description="The specific zone")]
     ):
         logger.info("get temp - zone %s", zone)
         temp = self._temperature[Zone(zone)]
@@ -41,8 +39,8 @@ class AssistantFnc(llm.FunctionContext):
     def set_temperature(
         self,
         zone: Annotated[Zone, llm.TypeInfo(description="The specific zone")],
-        temp: Annotated[int, llm.TypeInfo(description="The temperature to set")]
-        ):
-            logger.info("set temp - zone %s, temp: %s", zone, temp)
-            self._temperature[Zone(zone)] = temp
-            return f"The temperature in the {zone} is now {temp}C"
+        temp: Annotated[int, llm.TypeInfo(description="The temperature to set")],
+    ):
+        logger.info("set temp - zone %s, temp: %s", zone, temp)
+        self._temperature[Zone(zone)] = temp
+        return f"The temperature in the {zone} is now {temp}C"
